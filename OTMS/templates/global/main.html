@@ -1,5 +1,7 @@
 {% block content %}
 {% csrf_token %}
-<h1>Hello</h1>
-<a href="{% url 'register_users' %}"> registrations</a>
+<h1>Hello {{ user.username }}</h1>
+<a href="{% url 'register_users' %}"> registrations</a><br>
+<a href="{% url 'authentic_user' %}"> login</a><br>
+<a href="{% url 'logout_request' %}"> logout</a>
 {% endblock %}
