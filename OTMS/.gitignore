@@ -2,3 +2,4 @@ register/migrations
 register/__pycache__
 OTMS/migrations
 OTMS/__pycache__
+db.sqlite3

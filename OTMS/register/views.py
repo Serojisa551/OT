@@ -1,8 +1,6 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
-from django.contrib.auth.hashers import make_password
-
 
 def main_page(request):
     """
@@ -19,11 +17,6 @@ def register_users(request):
     """
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
-        request_copy = request.POST.copy()
-        password1 = request.POST.get("password1")
-        password2 = request.POST.get("password2")
-        request_copy[password1] = password1
-        request_copy[password2] = password2
         if form.is_valid():
             user = form.save()
             login(request, user)
