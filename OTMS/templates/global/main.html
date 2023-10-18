@@ -1,7 +1,12 @@
 {% block content %}
 {% csrf_token %}
-<h1>Hello {{ user.username }}</h1>
-<a href="{% url 'register_users' %}"> registrations</a><br>
-<a href="{% url 'authentic_user' %}"> login</a><br>
-<a href="{% url 'logout_request' %}"> logout</a>
+<h1>Hello</h1>
+
+<ul>
+    <li><a href="{% url 'register_users' %}"> registrations</a</li>
+    <li><a href="{% url 'authentic_user' %}"> login</a></li>
+    <li><a href="{% url 'logout_request' %}"> logout</a></li>
+    <li><a href="{% url 'password_reset_email' %}"> password reset via email</a></li>
+</ul>
+
 {% endblock %}

@@ -3,6 +3,10 @@ from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User 
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail as django_send_mail 
+from django.conf import settings
+from .utils import *
 
 def main_page(request):
     """
@@ -55,3 +59,18 @@ def logout_request(request):
     """
     logout(request) 
     return redirect('main_page')
+
+
+def send_mail(request):
+    if request.method == "POST":
+        print(request.POST)
+        email = request.POST.get("email")
+        email = cutting(email)
+        django_send_mail(
+            "Reset password",
+            "hello",
+            settings.EMAIL_HOST_USER,
+            [email],
+            
+        )
+    return render(request, 'register/password_reset/email_password_reset.html')
