@@ -7,6 +7,8 @@ from django.contrib.auth.views import PasswordResetView
 from django.core.mail import send_mail as django_send_mail 
 from django.conf import settings
 from .utils import *
+import smtplib
+
 
 def main_page(request):
     """
@@ -60,17 +62,20 @@ def logout_request(request):
     logout(request) 
     return redirect('main_page')
 
-
-def send_mail(request):
+#TODO 
+def send_email(request):
     if request.method == "POST":
-        print(request.POST)
-        email = request.POST.get("email")
-        email = cutting(email)
-        django_send_mail(
-            "Reset password",
-            "hello",
-            settings.EMAIL_HOST_USER,
-            [email],
-            
-        )
+        from_email = 'isahakyan2021@gmail.com'
+        to_email = request.POST.get("email")
+        app_password = 'ksacudajkxovanqn'
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.login(from_email, app_password)
+            server.sendmail(from_email, to_email, 'Test email')
+            server.quit()
+            print("Email sent successfully!")
+        except Exception as e:
+            print(f"Error: {e}")
     return render(request, 'register/password_reset/email_password_reset.html')
+
+
