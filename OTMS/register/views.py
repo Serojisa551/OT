@@ -6,9 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordResetView
 from django.core.mail import send_mail as django_send_mail 
 from django.conf import settings
-from .utils import *
 import smtplib
-
+from django.contrib.auth import get_user_model
 
 def main_page(request):
     """
@@ -62,7 +61,7 @@ def logout_request(request):
     logout(request) 
     return redirect('main_page')
 
-#TODO 
+#TODO Does not send a link to the password recovery page
 def send_email(request):
     if request.method == "POST":
         from_email = 'isahakyan2021@gmail.com'
@@ -71,11 +70,43 @@ def send_email(request):
         try:
             server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             server.login(from_email, app_password)
-            server.sendmail(from_email, to_email, 'Test email')
+            server.sendmail(from_email, to_email, 'text')
             server.quit()
             print("Email sent successfully!")
         except Exception as e:
             print(f"Error: {e}")
     return render(request, 'register/password_reset/email_password_reset.html')
 
+def reset_password(request, email):
+    """
+    If the request method is POST, the function tries to find the user with the specified email.
+    If the user is not found, he is redirected to the password reset page.
+    Otherwise, the user's password is changed to the new password specified in the POST request.
+    After a successful password reset, the user is redirected to the authentication page.
+    """
+    if request.method == "POST":
+        try:
+            users = get_user_by_email(email)
+            if users == None:
+                return redirect("password_reset_email")
+            else:
+                user = User.objects.get(pk=users.pk)
+                user.set_password(request.POST.get("password1"))
+                user.save()
+                return redirect('authentic_user')
+        except User.DoesNotExist:
+            pass
+    return render(request,"register/password_reset/reset_password.html")
 
+def get_user_by_email(email):
+    """
+    The function tries to find the user by the specified email.
+    If a user with such mail is found, it is returned as a user object.
+    If the user is not found, the function returns None.
+    """
+    User = get_user_model()
+    try:
+        user = User.objects.get(email=email)
+        return user
+    except User.DoesNotExist:
+        return None
