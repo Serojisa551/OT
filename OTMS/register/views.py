@@ -8,6 +8,7 @@ from django.core.mail import send_mail as django_send_mail
 from django.conf import settings
 import smtplib
 from django.contrib.auth import get_user_model
+from random import randint
 
 def main_page(request):
     """
@@ -61,21 +62,37 @@ def logout_request(request):
     logout(request) 
     return redirect('main_page')
 
-#TODO Does not send a link to the password recovery page
 def send_email(request):
+    """
+    Generates a token and sends email
+    """
     if request.method == "POST":
         from_email = 'isahakyan2021@gmail.com'
         to_email = request.POST.get("email")
         app_password = 'ksacudajkxovanqn'
         try:
+            token = generated_token()
             server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             server.login(from_email, app_password)
-            server.sendmail(from_email, to_email, 'text')
+            server.sendmail(from_email, to_email, token)
             server.quit()
             print("Email sent successfully!")
+            return redirect(f"/checking_email/{token}/?email={to_email}")
         except Exception as e:
             print(f"Error: {e}")
     return render(request, 'register/password_reset/email_password_reset.html')
+
+def checking_email(request, token):
+    """
+    If it passes the token check, it goes to the password reset page, if it does not pass, then the update form.
+    """
+    if request.method == "POST":
+        origin_token = token
+        user_token = request.POST.get("token")
+        if origin_token == user_token:
+            email = request.GET.get("email")
+            return redirect(f"/password_reset/{email}/")
+    return render(request, "register/password_reset/checking_email.html")
 
 def reset_password(request, email):
     """
@@ -92,10 +109,12 @@ def reset_password(request, email):
             else:
                 user = User.objects.get(pk=users.pk)
                 user.set_password(request.POST.get("password1"))
+                print("befor save", request.POST.get("password1"))
                 user.save()
+                print("after save")
                 return redirect('authentic_user')
-        except User.DoesNotExist:
-            pass
+        except User.DoesNotExist as e:
+            print(f"Error: {e}")
     return render(request,"register/password_reset/reset_password.html")
 
 def get_user_by_email(email):
@@ -107,6 +126,14 @@ def get_user_by_email(email):
     User = get_user_model()
     try:
         user = User.objects.get(email=email)
+        print(user)
         return user
     except User.DoesNotExist:
+        print(None)
         return None
+
+def generated_token():
+    token = ""
+    for i in range(6):
+        token += str(randint(0,10))
+    return token
