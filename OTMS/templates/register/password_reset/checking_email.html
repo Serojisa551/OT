@@ -1,10 +1,10 @@
 {% extends "global/base.html" %}
 
 {% block content %}
-<h2>checking_email</h2>
+<h2>Checking Email</h2>
 <form method="post">
     {% csrf_token %}
     <input type="text" id="token" name="token" minlength="6" required>
-    <button type="submit">Сбросить пароль</button>
+    <button type="submit">checking email</button>
 </form>
 {% endblock %}

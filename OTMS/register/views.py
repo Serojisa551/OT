@@ -3,9 +3,6 @@ from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User 
-from django.contrib.auth.views import PasswordResetView
-from django.core.mail import send_mail as django_send_mail 
-from django.conf import settings
 import smtplib
 from django.contrib.auth import get_user_model
 from random import randint
