@@ -3,4 +3,8 @@ register/__pycache__
 OTMS/migrations
 OTMS/__pycache__
 db.sqlite3
-task/
+task/migrations
+task/__pycache__
+comment/migrations
+comment/__pycache__
+templates/task
