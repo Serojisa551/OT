@@ -7,4 +7,3 @@ task/migrations
 task/__pycache__
 comment/migrations
 comment/__pycache__
-templates/task

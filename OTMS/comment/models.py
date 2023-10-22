@@ -2,7 +2,7 @@ from django.db import models
 from register.models import User
 from task.models import Task
 
-class Comments(models.Model):
+class Comment(models.Model):
     comment_text = models.TextField()
     comment_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
