@@ -23,10 +23,14 @@ def register_users(request):
     """
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('main_page')
+        email = request.POST.get("email")
+        if CustomUserCreationForm.email_valid(email) == None:
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return redirect('main_page')
+        form = CustomUserCreationForm()        
+        return render(request, 'register/register_users.html',  {'form': form})
     else:
         form = CustomUserCreationForm()
     return render(request, 'register/register_users.html', {'form': form})

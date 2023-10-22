@@ -12,3 +12,11 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = UserCreationForm.Meta.fields + ("email", "role", "other_data")
 
+    def email_valid(email):
+        user = User.objects.get(email=email)
+        if user == None:
+            return None
+        else:
+            return False
+        
+
